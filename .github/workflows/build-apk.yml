@@ -26,38 +26,13 @@ jobs:
 
       - name: Set Android compile SDK to 36
         run: |
-          python3 - <<'PY'
-          from pathlib import Path
-          import re
-          candidates = [Path("android/app/build.gradle"), Path("android/app/build.gradle.kts")]
-          build_file = next((p for p in candidates if p.exists()), None)
-          if build_file is None:
-              raise SystemExit("Android app Gradle file not found after flutter create")
-          content = build_file.read_text()
-          pattern = re.compile(r'(?m)^(\\s*compileSdk(?:Version)?\\s*(?:=\\s*)?)flutter\\.compileSdkVersion\\s*
-
-      - name: Analyze source
-        run: flutter analyze --no-fatal-infos
-
-      - name: Run tests
-        run: flutter test
-
-      - name: Build release APK
-        run: flutter build apk --release
-
-      - name: Upload APK
-        uses: actions/upload-artifact@v4
-        with:
-          name: mizaniyat-bayti-release-apk
-          path: build/app/outputs/flutter-apk/app-release.apk
-          if-no-files-found: error
-)
-          updated, count = pattern.subn(r'\\g<1>36', content, count=1)
-          if count != 1:
-              raise SystemExit("Could not find the generated compileSdk flutter.compileSdkVersion declaration")
-          build_file.write_text(updated)
-          print(f"Updated {build_file}: compileSdk=36")
-          PY
+          FILE=android/app/build.gradle
+          if [ -f android/app/build.gradle.kts ]; then FILE=android/app/build.gradle.kts; fi
+          sed -i 's/compileSdk flutter.compileSdkVersion/compileSdk 36/' "$FILE"
+          sed -i 's/compileSdk = flutter.compileSdkVersion/compileSdk = 36/' "$FILE"
+          sed -i 's/compileSdkVersion flutter.compileSdkVersion/compileSdkVersion 36/' "$FILE"
+          grep 'compileSdk' "$FILE"
+          grep -Eq 'compileSdk(Version)?[[:space:]]*(=[[:space:]]*)?36' "$FILE" || { echo "compileSdk was not updated to 36"; exit 1; }
 
       - name: Install dependencies
         run: flutter pub get
