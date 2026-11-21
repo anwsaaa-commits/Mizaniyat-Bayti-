@@ -61,5 +61,17 @@ class AppDatabase {
     final r=await (await db).query('budgets',columns:['amount'],where:'month_key=? AND category IS NULL',whereArgs:[key],limit:1);
     return r.isEmpty?0:(r.first['amount'] as num).toInt();
   }
+  Future<List<Map<String,Object?>>> reportRows(DateTime start, DateTime end) async {
+    final d=await db;
+    return d.query('transactions',where:'occurred_at>=? AND occurred_at<?',whereArgs:[start.toIso8601String(),end.toIso8601String()],orderBy:'occurred_at ASC,id ASC');
+  }
+  Future<Map<String,int>> reportSummary(DateTime start, DateTime end) async {
+    final d=await db;
+    final rows=await d.rawQuery('SELECT kind,SUM(amount) total FROM transactions WHERE occurred_at>=? AND occurred_at<? GROUP BY kind',[start.toIso8601String(),end.toIso8601String()]);
+    var expenses=0,income=0;
+    for(final r in rows){if(r['kind']=='expense')expenses=(r['total'] as num?)?.toInt()??0;if(r['kind']=='income')income=(r['total'] as num?)?.toInt()??0;}
+    return {'expenses':expenses,'income':income,'balance':income-expenses};
+  }
+
   Future<int> deleteRecord(int id) async => (await db).delete('transactions',where:'id=?',whereArgs:[id]);
 }
