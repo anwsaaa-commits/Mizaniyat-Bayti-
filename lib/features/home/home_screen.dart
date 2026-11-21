@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import '../../core/constants/app_constants.dart';
 import '../../core/theme/app_theme.dart';
 import '../../database/app_database.dart';
+import '../reports/reports_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -269,6 +270,11 @@ class _HomeScreenState extends State<HomeScreen> {
                       'الميزانية',
                       Icons.savings,
                       _editBudget,
+                    ),
+                    _ActionTile(
+                      'التقارير المالية',
+                      Icons.analytics_outlined,
+                      () => Navigator.push(context, MaterialPageRoute(builder: (_) => const ReportsScreen())),
                     ),
                   ],
                 ),
