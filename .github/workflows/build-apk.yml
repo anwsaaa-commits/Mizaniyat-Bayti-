@@ -1,54 +1,35 @@
-name: Build Mizaniyat Bayti APK
-
+name: Build Tuna Plus APK
 on:
   push:
-    branches: [main]
+    branches: [main, tuna-plus-conversion]
   workflow_dispatch:
-
 permissions:
   contents: read
-
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout source
-        uses: actions/checkout@v4
-
-      - name: Set up Flutter
-        uses: subosito/flutter-action@v2
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
         with:
           channel: stable
           cache: true
-
       - name: Generate Android platform files
-        run: flutter create . --platforms=android --org com.alshaheen.homebudget --project-name mizaniyat_bayti --no-pub
-
-      - name: Set Android compile SDK to 36
+        run: flutter create . --platforms=android --org com.alshaheen.tunaplus --project-name tuna_sales_ledger --no-pub
+      - name: Set compile SDK 36
         run: |
           FILE=android/app/build.gradle
           if [ -f android/app/build.gradle.kts ]; then FILE=android/app/build.gradle.kts; fi
           sed -i 's/compileSdk flutter.compileSdkVersion/compileSdk 36/' "$FILE"
           sed -i 's/compileSdk = flutter.compileSdkVersion/compileSdk = 36/' "$FILE"
           sed -i 's/compileSdkVersion flutter.compileSdkVersion/compileSdkVersion 36/' "$FILE"
-          grep 'compileSdk' "$FILE"
-          grep -Eq 'compileSdk(Version)?[[:space:]]*(=[[:space:]]*)?36' "$FILE" || { echo "compileSdk was not updated to 36"; exit 1; }
-
-      - name: Install dependencies
-        run: flutter pub get
-
-      - name: Analyze source
-        run: flutter analyze --no-fatal-infos
-
-      - name: Run tests
-        run: flutter test
-
-      - name: Build release APK
-        run: flutter build apk --release
-
-      - name: Upload APK
-        uses: actions/upload-artifact@v4
+          grep -Eq 'compileSdk(Version)?[[:space:]]*(=[[:space:]]*)?36' "$FILE"
+      - run: flutter pub get
+      - run: flutter analyze --no-fatal-infos
+      - run: flutter test
+      - run: flutter build apk --release
+      - uses: actions/upload-artifact@v4
         with:
-          name: mizaniyat-bayti-release-apk
+          name: tuna-plus-release-apk
           path: build/app/outputs/flutter-apk/app-release.apk
           if-no-files-found: error
