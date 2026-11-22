@@ -1,33 +1,29 @@
-name: mizaniyat_bayti
-description: تطبيق ميزانية بيتي لإدارة مصاريف المنزل والمشتريات اليومية
-publish_to: "none"
+name: tuna_sales_ledger
+description: تطبيق حسابات بيع التونة بالكيلو وإدارة العملاء والفواتير والتحصيل والتقارير.
+publish_to: 'none'
 version: 1.0.0+1
 
 environment:
-  sdk: ">=3.3.0 <4.0.0"
+  sdk: '>=3.3.0 <4.0.0'
 
 dependencies:
   flutter:
     sdk: flutter
   flutter_localizations:
     sdk: flutter
-  intl: ^0.20.3
-  sqflite: ^2.4.1
+  sqflite: ^2.3.3+1
+  path_provider: ^2.1.4
   path: ^1.9.0
-  path_provider: ^2.1.5
-  shared_preferences: ^2.3.5
-  fl_chart: ^0.69.2
+  intl: ^0.20.3
   pdf: ^3.11.1
-  printing: ^5.13.4
-  share_plus: ^10.1.4
-  csv: ^6.0.0
-  excel: ^4.0.6
-  crypto: ^3.0.6
+  printing: ^5.13.3
+  share_plus: ^10.0.2
+  file_picker: ^8.1.2
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^5.0.0
+  flutter_lints: ^4.0.0
 
 flutter:
   uses-material-design: true
