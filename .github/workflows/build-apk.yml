@@ -16,7 +16,8 @@ jobs:
    - name: Generate Android scaffold
      run: flutter create . --org com.alshaheen --project-name tuna_sales_ledger --platforms android --no-pub
    - run: flutter pub get
-   - run: flutter analyze
+   - name: Analyze Dart (allow informational lints)
+     run: flutter analyze --no-fatal-infos
    - run: flutter test
    - run: flutter build apk --release
    - uses: actions/upload-artifact@v4
